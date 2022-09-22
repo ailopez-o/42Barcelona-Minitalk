@@ -8,4 +8,6 @@
 	<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/ailopez-o/42Barcelona-minitalk?color=green" />
 </p>
 
-## Signals management project
+## Server - Client
+
+The purpose of this project is to code a small data exchange program using UNIX signals.
