@@ -9,12 +9,86 @@
 /*   Updated: 2022/09/28 18:21:53 by ailopez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../lib/libft/libft.h"
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 
+#define MAX_NUM_CLIENTS 50
+
+typedef struct s_client{
+	char	*buffer;
+	char	byte;
+	char	num_bit;
+	int		pid;
+}	t_client;
+
+t_client	clients[MAX_NUM_CLIENTS];
+
+int	new_client(int pid)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAX_NUM_CLIENTS)
+	{
+		if (clients[i].pid == 0)
+		{
+			clients[i].pid = pid;
+			return (i);
+		}
+		i++;
+	}
+	return (-1);
+}
+
+int	get_client(int pid)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAX_NUM_CLIENTS)
+	{
+		if (clients[i].pid == pid)
+			return (i);
+		i++;
+	}
+	return (new_client(pid));
+}
+
+void	init_clients(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAX_NUM_CLIENTS)
+	{
+		clients[i].pid = 0;
+		i++;
+	}
+}
+
 void signal_recived(int sig, siginfo_t *si, void *uap)
 {
+	int	id_client;
+	char temp[2];
+	char *new_buffer;
+
+	id_client = get_client(si->si_pid);
+	clients[id_client].num_bit++;
+	clients[id_client].byte |= (sig == SIGUSR2);
+	clients[id_client].byte <<= 1;
+	if (clients[id_client].num_bit == 8)
+	{
+		clients[id_client].num_bit = 0;
+		temp[0] = clients[id_client].byte;
+		temp[1] = '\0';
+		new_buffer = ft_strjoin(clients[id_client].buffer, temp);
+		free (clients[id_client].buffer);
+		clients[id_client].buffer = new_buffer;
+		if(clients[id_client].byte == '\0')
+			ft_putstr_fd(clients[id_client].buffer, 1);
+	}
 
     printf ("signal ");
     if ( si->si_signo == SIGUSR2)
@@ -65,6 +139,8 @@ int main (void)
 	 * function. With SA_RESTART, the function is resumed instead of
 	 * returning an error. */
 	signal.sa_flags = SA_RESTART;
+
+	init_clients();
 
     /* Add our signals handler */
     sigaction(SIGUSR2, &signal, NULL);
