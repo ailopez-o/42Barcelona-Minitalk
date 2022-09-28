@@ -64,6 +64,20 @@ void	init_clients(void)
 	while (i < MAX_NUM_CLIENTS)
 	{
 		clients[i].pid = 0;
+		clients[i].num_bit = 0;
+		clients[i].buffer = ft_strdup("");
+		i++;
+	}
+}
+
+void	free_clients(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAX_NUM_CLIENTS)
+	{
+		free(clients[i].buffer);
 		i++;
 	}
 }
@@ -73,11 +87,10 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 	int	id_client;
 	char temp[2];
 	char *new_buffer;
-
-	id_client = get_client(si->si_pid);
+	
+	id_client = get_client(si->si_pid);	
 	clients[id_client].num_bit++;
 	clients[id_client].byte |= (sig == SIGUSR2);
-	clients[id_client].byte <<= 1;
 	if (clients[id_client].num_bit == 8)
 	{
 		clients[id_client].num_bit = 0;
@@ -89,7 +102,9 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 		if(clients[id_client].byte == '\0')
 			ft_putstr_fd(clients[id_client].buffer, 1);
 	}
-
+	else
+		clients[id_client].byte <<= 1;
+		
     printf ("signal ");
     if ( si->si_signo == SIGUSR2)
          printf ("[SIGUSR2]");
@@ -145,6 +160,13 @@ int main (void)
     /* Add our signals handler */
     sigaction(SIGUSR2, &signal, NULL);
     sigaction(SIGUSR1, &signal, NULL);
+
+	clients[0].byte |= (1);
+	clients[0].byte <<= 1;	
+	clients[0].byte |= (0);
+	clients[0].byte <<= 1;
+	clients[0].byte |= (1);
+	clients[0].byte <<= 1;				
 
     printf("\nServer PID [%d]\n\n", getpid());
     while(1);
