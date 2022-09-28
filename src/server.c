@@ -84,8 +84,8 @@ void	free_clients(void)
 
 void signal_recived(int sig, siginfo_t *si, void *uap)
 {
-	int	id_client;
-	char temp[2];
+	int		id_client;
+	char	temp[2];
 	char *new_buffer;
 	
 	id_client = get_client(si->si_pid);	
@@ -93,7 +93,6 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 	clients[id_client].byte |= (sig == SIGUSR2);
 	if (clients[id_client].num_bit == 8)
 	{
-		clients[id_client].num_bit = 0;
 		temp[0] = clients[id_client].byte;
 		temp[1] = '\0';
 		new_buffer = ft_strjoin(clients[id_client].buffer, temp);
@@ -101,6 +100,8 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 		clients[id_client].buffer = new_buffer;
 		if(clients[id_client].byte == '\0')
 			ft_putstr_fd(clients[id_client].buffer, 1);
+		clients[id_client].byte = 0;
+		clients[id_client].num_bit = 0;
 	}
 	else
 		clients[id_client].byte <<= 1;
