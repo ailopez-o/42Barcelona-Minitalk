@@ -116,13 +116,27 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
     printf (" from PID: %d\n", si->si_pid);   
 */
 
-	//id_client = get_client(si->si_pid);
+	if (si->si_pid == 0)
+	{
+		printf("signal %d received with siginfo_t:\n", sig);
+		printf("\tsignal number: si_signo=%d\n", si->si_signo);
+		printf("\terror number: si_errno=%d\n", si->si_errno);
+		printf("\tsignal code: si_code=%d\n", si->si_code);
+		printf("\tsignal value union: si_value, sival_int=%d\n", si->si_value.sival_int);
+		printf("\tsignal value union: si_value, sival_ptr=%p\n", si->si_value.sival_ptr);
+		printf("\tsending process ID: si_pid=%d\n", si->si_pid);
+		printf("\tsending process user's ID: si_uid=%d\n", si->si_uid);
+		printf("\tfaulting instruction at: si_addr=%p\n", si->si_addr);
+		printf("\texit value or signal: si_status=%d\n", si->si_status);
+		printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
+		printf("\n");
+	}
 
 	if (client.pid != si->si_pid)
 		reset_client (si->si_pid);
 	client.num_bit++;
 	client.byte |= (sig == SIGUSR2);
-	//printf ("Client ID [%d] - Client PID [%d] - Byte [0x%02x]\n", id_client, clients[id_client].pid, clients[id_client].byte);
+	//printf ("Client PID [%d] - Byte [0x%02x]\n", client.pid, client.byte);
 	if (client.num_bit == 8)
 	{
 		//printf ("BYRE READY [%c] From PID [%d]\n Id [%d]", client.byte, client.pid, id_client);
@@ -151,7 +165,9 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
   //printf("\texit value or signal: si_status=%d\n", si->si_status);
   //printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
   //printf("\n");
-
+  	//printf ("SIGUSR1 to PID [%d]\n", client.pid);
+	//usleep(50);
+	//kill (client.pid, SIGUSR1);
 }
 
 int main (void)
