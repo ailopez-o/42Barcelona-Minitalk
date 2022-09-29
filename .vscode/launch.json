@@ -8,9 +8,9 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "/Users/aitoraudicana/42barcelona/cursus/minitalk/server",
+            "program": "/Users/ailopez-/42barcelona/cursus/minitalk/server",
             "args": [],
-            "cwd": "/Users/aitoraudicana/42barcelona/cursus/minitalk"
+            "cwd": "/Users/ailopez-/42barcelona/cursus/minitalk"
         }
     ]
 }

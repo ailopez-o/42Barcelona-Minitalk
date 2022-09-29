@@ -23,8 +23,10 @@ typedef struct s_client{
 	int		pid;
 }	t_client;
 
-t_client	clients[MAX_NUM_CLIENTS];
+//t_client	clients[MAX_NUM_CLIENTS];
+t_client	client;
 
+/*
 int	new_client(int pid)
 {
 	int	i;
@@ -81,37 +83,62 @@ void	free_clients(void)
 		i++;
 	}
 }
+*/
+
+void	print_msj(char *str, int pid)
+{
+	ft_putstr_fd("\nMessage from PID[", 1);
+	ft_putstr_fd(ft_itoa(pid), 1);
+	ft_putstr_fd("] >> ", 1);	
+	ft_putstr_fd(str, 1);
+	ft_putstr_fd("\n", 1);		
+}
+
+void	reset_client(int pid)
+{
+	client.pid = pid;
+	client.num_bit = 0;
+	client.buffer = ft_strdup("");
+}
 
 void signal_recived(int sig, siginfo_t *si, void *uap)
 {
 	int		id_client;
 	char	temp[2];
-	char *new_buffer;
+	char 	*new_buffer;
 	
-	id_client = get_client(si->si_pid);	
-	clients[id_client].num_bit++;
-	clients[id_client].byte |= (sig == SIGUSR2);
-	if (clients[id_client].num_bit == 8)
+/*
+  	printf ("Signal ");
+    if ( si->si_signo == SIGUSR2)
+         printf ("[SIGUSR2] >> BIT_1");
+    if ( si->si_signo == SIGUSR1)
+         printf ("[SIGUSR1] >> BIT_0");
+    printf (" from PID: %d\n", si->si_pid);   
+*/
+
+	//id_client = get_client(si->si_pid);
+
+	if (client.pid != si->si_pid)
+		reset_client (si->si_pid);
+	client.num_bit++;
+	client.byte |= (sig == SIGUSR2);
+	//printf ("Client ID [%d] - Client PID [%d] - Byte [0x%02x]\n", id_client, clients[id_client].pid, clients[id_client].byte);
+	if (client.num_bit == 8)
 	{
-		temp[0] = clients[id_client].byte;
+		//printf ("BYRE READY [%c] From PID [%d]\n Id [%d]", client.byte, client.pid, id_client);
+		temp[0] = client.byte;
 		temp[1] = '\0';
-		new_buffer = ft_strjoin(clients[id_client].buffer, temp);
-		free (clients[id_client].buffer);
-		clients[id_client].buffer = new_buffer;
-		if(clients[id_client].byte == '\0')
-			ft_putstr_fd(clients[id_client].buffer, 1);
-		clients[id_client].byte = 0;
-		clients[id_client].num_bit = 0;
+		new_buffer = ft_strjoin(client.buffer, temp);
+		free (client.buffer);
+		client.buffer = new_buffer;
+		if(client.byte == '\0')
+			print_msj(client.buffer, client.pid);
+		client.byte = 0;	
+		client.num_bit = 0;
 	}
 	else
-		clients[id_client].byte <<= 1;
+		client.byte <<= 1;
 		
-    printf ("signal ");
-    if ( si->si_signo == SIGUSR2)
-         printf ("[SIGUSR2]");
-    if ( si->si_signo == SIGUSR1)
-         printf ("[SIGUSR1]");
-     printf (" from PID: %d\n", si->si_pid);     
   //printf("signal %d received with siginfo_t:\n", sig);
   //printf("\tsignal number: si_signo=%d\n", si->si_signo);
   //printf("\terror number: si_errno=%d\n", si->si_errno);
@@ -123,12 +150,14 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
   //printf("\tfaulting instruction at: si_addr=%p\n", si->si_addr);
   //printf("\texit value or signal: si_status=%d\n", si->si_status);
   //printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
-  printf("\n");
+  //printf("\n");
 
 }
 
 int main (void)
 {
+	//int id_client;
+
     /* sigaction is a struct describing a signal handler. It contains:
 	   - A signal handler function
 	   
@@ -156,19 +185,15 @@ int main (void)
 	 * returning an error. */
 	signal.sa_flags = SA_RESTART;
 
-	init_clients();
-
     /* Add our signals handler */
     sigaction(SIGUSR2, &signal, NULL);
     sigaction(SIGUSR1, &signal, NULL);
 
-	clients[0].byte |= (1);
-	clients[0].byte <<= 1;	
-	clients[0].byte |= (0);
-	clients[0].byte <<= 1;
-	clients[0].byte |= (1);
-	clients[0].byte <<= 1;				
-
-    printf("\nServer PID [%d]\n\n", getpid());
-    while(1);
+	ft_putstr_fd("\nServer PID [", 1);
+	ft_putstr_fd(ft_itoa(getpid()), 1);
+	ft_putstr_fd("]\n\n", 1);
+    while(1)
+	{
+		pause();
+	}
 }
