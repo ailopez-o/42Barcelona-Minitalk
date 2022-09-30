@@ -42,7 +42,7 @@ GCC			=	gcc
 
 #FLAGS		=	-g -Wall -Wextra -Werror
 
-FLAGS		=	-g
+FLAGS		=	-g -fsanitize=address -g3
 
 INCLUDE		=	-I include
 

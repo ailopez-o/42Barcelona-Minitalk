@@ -65,10 +65,10 @@ int main (int argv, char **argc)
 	if (argv != 3)
 		return (0);
 
-    signal.sa_sigaction = clean_semaforo;
-	sigfillset(&signal.sa_mask);
-	signal.sa_flags = SA_RESTART;
-    sigaction(SIGUSR1, &signal, NULL);
+    //signal.sa_sigaction = clean_semaforo;
+	//sigfillset(&signal.sa_mask);
+	//signal.sa_flags = SA_RESTART;
+    //sigaction(SIGUSR1, &signal, NULL);
 
 	server_pid = ft_atoi(argc[1]);
 	while	(argc[2][i])
