@@ -96,6 +96,11 @@ void	print_msj(char *str, int pid)
 
 void	reset_client(int pid)
 {
+	char 	*msg = "\n\n 📥 Starting new message from PID [";
+
+	ft_putstr_fd(msg, 1);
+	ft_putstr_fd(ft_itoa(pid), 1);
+	ft_putstr_fd("]\n\n", 1);
 	client.pid = pid;
 	client.num_bit = 0;
 	client.buffer = ft_strdup("");
@@ -130,6 +135,7 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 		printf("\texit value or signal: si_status=%d\n", si->si_status);
 		printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
 		printf("\n");
+		return;
 	}
 
 	if (client.pid != si->si_pid)
@@ -139,14 +145,15 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 	//printf ("Client PID [%d] - Byte [0x%02x]\n", client.pid, client.byte);
 	if (client.num_bit == 8)
 	{
+		ft_putchar_fd(client.byte, 1);
 		//printf ("BYRE READY [%c] From PID [%d]\n Id [%d]", client.byte, client.pid, id_client);
 		temp[0] = client.byte;
 		temp[1] = '\0';
 		new_buffer = ft_strjoin(client.buffer, temp);
 		free (client.buffer);
 		client.buffer = new_buffer;
-		if(client.byte == '\0')
-			print_msj(client.buffer, client.pid);
+		//if(client.byte == '\0')
+		//	print_msj(client.buffer, client.pid);
 		client.byte = 0;	
 		client.num_bit = 0;
 	}

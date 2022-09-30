@@ -15,14 +15,18 @@
 #include <stdio.h>
 
 int	semaforo;
+int server_pid;
 
 void clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
-	//semaforo = 0;
-	//write(1, ".", 1);
+	if (si->si_pid == server_pid && sig == SIGUSR1)
+	{
+		semaforo = 0;
+		//write(1, ".", 1);
+	}
 }
 
-int	send_byte(int byte, int pid)
+int	send_byte(char byte, int pid)
 {
 	int i;
 
@@ -33,7 +37,7 @@ int	send_byte(int byte, int pid)
 	// ft_putstr_fd("Caracter [", 1);
 	// ft_putstr_fd(temp, 1);
 	// ft_putstr_fd("]\n", 1);	
-
+	ft_putchar_fd(byte, 1);
 	i = 0;
 	while (i < 8)
 	{
@@ -48,6 +52,7 @@ int	send_byte(int byte, int pid)
 		//pause();
 		usleep(200);
 	}
+
 	return (0);
 }
 
@@ -55,22 +60,22 @@ int	send_byte(int byte, int pid)
 int main (int argv, char **argc)
 {
 	int	i;
-	int server_pid;
     struct sigaction signal;	
 
 	if (argv != 3)
 		return (0);
 
-    //signal.sa_sigaction = clean_semaforo;
-	//sigfillset(&signal.sa_mask);
-	//signal.sa_flags = SA_RESTART;
-    //sigaction(SIGUSR1, &signal, NULL);
+    signal.sa_sigaction = clean_semaforo;
+	sigfillset(&signal.sa_mask);
+	signal.sa_flags = SA_RESTART;
+    sigaction(SIGUSR1, &signal, NULL);
 
 	server_pid = ft_atoi(argc[1]);
 	while	(argc[2][i])
 		send_byte(argc[2][i++], server_pid);
 	send_byte(argc[2][i], server_pid);
-    printf("\nSend [%s] to PID[%d]\n", argc[2], server_pid);
+    ///printf("\nSend [%s] to PID[%d]\n", argc[2], server_pid);
+	printf("\n\n 📟 Sended to PID [%d]\n\n", server_pid);
 	return (0);
 }
 
