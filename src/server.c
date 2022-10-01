@@ -9,7 +9,7 @@
 /*   Updated: 2022/09/28 18:21:53 by ailopez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../lib/libft/libft.h"
+#include "../lib/printf/inc/ft_printf.h"
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
@@ -110,9 +110,9 @@ void	reset_client(int pid)
 
 void signal_recived(int sig, siginfo_t *si, void *uap)
 {
-	int		id_client;
-	char	temp[2];
-	char 	*new_buffer;
+	//int		id_client;
+	//char	temp[2];
+	//char 	*new_buffer;
 	
 /*
   	printf ("Signal ");
@@ -125,18 +125,18 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 
 	if (si->si_pid == 0)
 	{
-		printf("signal %d received with siginfo_t:\n", sig);
-		printf("\tsignal number: si_signo=%d\n", si->si_signo);
-		printf("\terror number: si_errno=%d\n", si->si_errno);
-		printf("\tsignal code: si_code=%d\n", si->si_code);
-		printf("\tsignal value union: si_value, sival_int=%d\n", si->si_value.sival_int);
-		printf("\tsignal value union: si_value, sival_ptr=%p\n", si->si_value.sival_ptr);
-		printf("\tsending process ID: si_pid=%d\n", si->si_pid);
-		printf("\tsending process user's ID: si_uid=%d\n", si->si_uid);
-		printf("\tfaulting instruction at: si_addr=%p\n", si->si_addr);
-		printf("\texit value or signal: si_status=%d\n", si->si_status);
-		printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
-		printf("\n");
+		// printf("signal %d received with siginfo_t:\n", sig);
+		// printf("\tsignal number: si_signo=%d\n", si->si_signo);
+		// printf("\terror number: si_errno=%d\n", si->si_errno);
+		// printf("\tsignal code: si_code=%d\n", si->si_code);
+		// printf("\tsignal value union: si_value, sival_int=%d\n", si->si_value.sival_int);
+		// printf("\tsignal value union: si_value, sival_ptr=%p\n", si->si_value.sival_ptr);
+		// printf("\tsending process ID: si_pid=%d\n", si->si_pid);
+		// printf("\tsending process user's ID: si_uid=%d\n", si->si_uid);
+		// printf("\tfaulting instruction at: si_addr=%p\n", si->si_addr);
+		// printf("\texit value or signal: si_status=%d\n", si->si_status);
+		// printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
+		// printf("\n");
 	}
 
 	if (client.pid != si->si_pid && si->si_pid != 0)
@@ -148,34 +148,19 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 	{
 		ft_putchar_fd(client.byte, 1);
 		//printf ("BYRE READY [%c] From PID [%d]\n Id [%d]", client.byte, client.pid, id_client);
-		temp[0] = client.byte;
-		temp[1] = '\0';
-		new_buffer = ft_strjoin(client.buffer, temp);
-		free (client.buffer);
-		client.buffer = new_buffer;
-		if(client.byte == '\0')
-			print_msj(client.buffer, client.pid);
+		// temp[0] = client.byte;
+		// temp[1] = '\0';
+		// new_buffer = ft_strjoin(client.buffer, temp);
+		// free (client.buffer);
+		// client.buffer = new_buffer;
+		// if(client.byte == '\0')
+		// 	print_msj(client.buffer, client.pid);
 		client.byte = 0;	
 		client.num_bit = 0;
 	}
 	else
 		client.byte <<= 1;
-		
-  //printf("signal %d received with siginfo_t:\n", sig);
-  //printf("\tsignal number: si_signo=%d\n", si->si_signo);
-  //printf("\terror number: si_errno=%d\n", si->si_errno);
-  //printf("\tsignal code: si_code=%d\n", si->si_code);
-  //printf("\tsignal value union: si_value, sival_int=%d\n", si->si_value.sival_int);
-  //printf("\tsignal value union: si_value, sival_ptr=%p\n", si->si_value.sival_ptr);
-  //printf("\tsending process ID: si_pid=%d\n", si->si_pid);
-  //printf("\tsending process user's ID: si_uid=%d\n", si->si_uid);
-  //printf("\tfaulting instruction at: si_addr=%p\n", si->si_addr);
-  //printf("\texit value or signal: si_status=%d\n", si->si_status);
-  //printf("\tband event for SIGPOLL: si_band=%ld\n", si->si_band);
-  //printf("\n");
-  	//printf ("SIGUSR1 to PID [%d]\n", client.pid);
-	//usleep(50);
-	//kill (client.pid, SIGUSR1);
+	kill (client.pid, SIGUSR1);
 }
 
 int main (void)
