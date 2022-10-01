@@ -18,9 +18,9 @@ SERVER		=	src/server.c
 
 CLIENT		=	src/client.c
 
-LIBFT_DIR	= 	lib/libft
+MYLIB_DIR	= 	lib/mylib
 
-LIB			=	lib/libft/libft.a
+MYLIB		=	$(MYLIB_DIR)/mylib.a
 
 # Sources and objects
 OBJ_DIR		=	obj/
@@ -83,24 +83,24 @@ all: comp_start server client
 
 comp_start:
 	@$(COMP_START)
-	@$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) -C $(MYLIB_DIR)
 
 client: $(CLIENT_OBJS)
-	@$(GCC) $(FLAGS) $(CLIENT_OBJS) $(LIB) -o $(CLIENT_NAME)
+	@$(GCC) $(FLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT_NAME)
 	@$(CLI_READY)
 
 server: $(SERVER_OBJS)
-	@$(GCC) $(FLAGS) $(SERVER_OBJS) $(LIB) -o $(SERVER_NAME)
+	@$(GCC) $(FLAGS) $(SERVER_OBJS) $(MYLIB) -o $(SERVER_NAME)
 	@$(SERV_READY)
 
 clean:
 	@rm -rf $(OBJS)
-	@$(MAKE) clean -C $(LIBFT_DIR)
+	@$(MAKE) clean -C $(MYLIB_DIR)
 	@$(CLEANED)
 
 fclean: clean
 	@rm -rf $(SERVER_NAME) $(CLIENT_NAME)
-	@$(MAKE) fclean -C $(LIBFT_DIR)
+	@$(MAKE) fclean -C $(MYLIB_DIR)
 	@$(FCLEANED)
 
 re:	fclean all

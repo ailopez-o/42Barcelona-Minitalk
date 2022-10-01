@@ -1,0 +1,3 @@
+[submodule "lib/mylib"]
+	path = lib/mylib
+	url = git@github.com:ailopez-o/42Barcelona-Printf.git

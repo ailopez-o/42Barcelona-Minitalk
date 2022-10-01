@@ -9,7 +9,7 @@
 /*   Updated: 2022/09/28 18:21:53 by ailopez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../lib/printf/inc/ft_printf.h"
+#include "../lib/mylib/inc/ft_printf.h"
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
@@ -23,73 +23,15 @@ typedef struct s_client{
 	int		pid;
 }	t_client;
 
-//t_client	clients[MAX_NUM_CLIENTS];
 t_client	client;
-
-/*
-int	new_client(int pid)
-{
-	int	i;
-
-	i = 0;
-	while (i < MAX_NUM_CLIENTS)
-	{
-		if (clients[i].pid == 0)
-		{
-			clients[i].pid = pid;
-			return (i);
-		}
-		i++;
-	}
-	return (-1);
-}
-
-int	get_client(int pid)
-{
-	int	i;
-
-	i = 0;
-	while (i < MAX_NUM_CLIENTS)
-	{
-		if (clients[i].pid == pid)
-			return (i);
-		i++;
-	}
-	return (new_client(pid));
-}
-
-void	init_clients(void)
-{
-	int	i;
-
-	i = 0;
-	while (i < MAX_NUM_CLIENTS)
-	{
-		clients[i].pid = 0;
-		clients[i].num_bit = 0;
-		clients[i].buffer = ft_strdup("");
-		i++;
-	}
-}
-
-void	free_clients(void)
-{
-	int	i;
-
-	i = 0;
-	while (i < MAX_NUM_CLIENTS)
-	{
-		free(clients[i].buffer);
-		i++;
-	}
-}
-*/
 
 void	print_msj(char *str, int pid)
 {
-	ft_putstr_fd("\n\n 📟 Message finished from PID[", 1);
-	ft_putstr_fd(ft_itoa(pid), 1);
-	ft_putstr_fd("]\n\n ", 1);		
+	ft_printf("\n\n 📟 Message finished from PID[%d]\n\n", ft_itoa(pid));
+
+	//ft_putstr_fd("\n\n 📟 Message finished from PID[", 1);
+	//ft_putstr_fd(ft_itoa(pid), 1);
+	//ft_putstr_fd("]\n\n ", 1);		
 	//ft_putstr_fd("] >> ", 1);	
 	//ft_putstr_fd(str, 1);
 	//ft_putstr_fd("\n", 1);		
@@ -97,11 +39,14 @@ void	print_msj(char *str, int pid)
 
 void	reset_client(int pid)
 {
-	char 	*msg = "\n\n 📥 Starting new message from PID [";
 
-	ft_putstr_fd(msg, 1);
-	ft_putstr_fd(ft_itoa(pid), 1);
-	ft_putstr_fd("]\n\n", 1);
+	ft_printf("\n\n 📥 Starting new message from PID [%d]\n\n", ft_itoa(pid));
+
+	//char 	*msg = "\n\n 📥 Starting new message from PID [";
+
+	//ft_putstr_fd(msg, 1);
+	//ft_putstr_fd(ft_itoa(pid), 1);
+	//ft_putstr_fd("]\n\n", 1);
 	client.pid = pid;
 	client.num_bit = 0;
 	free (client.buffer);

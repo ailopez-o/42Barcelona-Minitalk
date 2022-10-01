@@ -9,7 +9,7 @@
 /*   Updated: 2022/09/28 18:21:44 by ailopez-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../lib/printf/inc/ft_printf.h"
+#include "../lib/mylib/inc/ft_printf.h"
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
