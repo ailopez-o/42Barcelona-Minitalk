@@ -1,3 +1,0 @@
-[submodule "lib/printf"]
-	path = lib/printf
-	url = git@github.com:ailopez-o/42Barcelona-Printf.git
