@@ -15,13 +15,19 @@
 #include <stdio.h>
 #include <time.h>
 
+void	ft_exit(char *str)
+{
+	ft_putstr_fd(str, 2);
+	exit(-1);
+}
+
 void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
 	if (sig == SIGUSR1)
 		return ;
 }
 
-int	send_byte(char byte, int pid)
+void	send_byte(char byte, int pid)
 {
 	int	i;
 
@@ -29,14 +35,19 @@ int	send_byte(char byte, int pid)
 	while (i < 8)
 	{
 		if (byte & 0x80)
-			kill (pid, SIGUSR2);
+		{
+			if (kill (pid, SIGUSR2) < 0)
+				ft_exit ("Kill error");
+		}
 		else
-			kill (pid, SIGUSR1);
+		{
+			if (kill (pid, SIGUSR1) < 0)
+				ft_exit ("Kill error");
+		}
 		byte <<= 1;
 		i++;
 		usleep(10000);
 	}
-	return (0);
 }
 
 void	print_resume(char *str, int pid, int ms)
