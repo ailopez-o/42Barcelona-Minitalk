@@ -15,9 +15,6 @@
 #include <stdio.h>
 #include <time.h>
 
-int server_pid;
-int	signal_timeouts;
-
 void clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
 	if (sig == SIGUSR1)
@@ -45,15 +42,8 @@ int	send_byte(char byte, int pid)
 
 void	print_resume(char *str, int pid, int ms)
 {
-	float errors;
-
-	errors = signal_timeouts * 100;
-	errors = errors / (ft_strlen(str) * 8);
-
 	//ft_printf("\n\n Sended %d bytes to PID [%s]\n\n", 27654, "Hola");
-
-
-	printf("\n\n Sended %d bytes to PID [%d] in %d ms with %f%% timeouts \n\n", ft_strlen(str), pid, ms, errors);
+	ft_printf("\n\n Sended %d bytes to PID [%d] in %d ms.\n\n", ft_strlen(str), pid, ms);
 }
 
 
@@ -62,7 +52,8 @@ int main (int argv, char **argc)
 	int	i;
 	clock_t	t;
 	double time;
-    struct sigaction signal;	
+	int server_pid;	
+	struct sigaction signal;	
 
 	if (argv != 3)
 		return (0);
@@ -73,7 +64,6 @@ int main (int argv, char **argc)
 	server_pid = ft_atoi(argc[1]);
 	t = clock();
 	i = 0;
-	signal_timeouts = 0;
 	while	(argc[2][i])
 		send_byte(argc[2][i++], server_pid);
 	send_byte(argc[2][i], server_pid);
