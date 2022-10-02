@@ -15,17 +15,16 @@
 #include <stdio.h>
 #include <time.h>
 
-void clean_semaforo(int sig, siginfo_t *si, void *uap)
+void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
 	if (sig == SIGUSR1)
-		return;
+		return ;
 }
 
 int	send_byte(char byte, int pid)
 {
-	int i;
+	int	i;
 
-	//ft_putchar_fd(byte, 1);
 	i = 0;
 	while (i < 8)
 	{
@@ -42,34 +41,32 @@ int	send_byte(char byte, int pid)
 
 void	print_resume(char *str, int pid, int ms)
 {
-	//ft_printf("\n\n Sended %d bytes to PID [%s]\n\n", 27654, "Hola");
-	ft_printf("\n\n Sended %d bytes to PID [%d] in %d ms.\n\n", ft_strlen(str), pid, ms);
+	ft_printf("\n\n 📟 Sended %d bytes to PID [%d] in %d ms.\n\n", \
+	ft_strlen(str), pid, ms);
 }
 
-
-int main (int argv, char **argc)
+int	main(int argv, char **argc)
 {
-	int	i;
-	clock_t	t;
-	double time;
-	int server_pid;	
-	struct sigaction signal;	
+	int					i;
+	clock_t				t;
+	double				time;
+	int					server_pid;	
+	struct sigaction	signal;	
 
 	if (argv != 3)
 		return (0);
-    signal.sa_sigaction = clean_semaforo;
+	signal.sa_sigaction = clean_semaforo;
 	sigfillset(&signal.sa_mask);
 	signal.sa_flags = SA_SIGINFO;
-    sigaction(SIGUSR1, &signal, NULL);
+	sigaction(SIGUSR1, &signal, NULL);
 	server_pid = ft_atoi(argc[1]);
 	t = clock();
 	i = 0;
-	while	(argc[2][i])
+	while (argc[2][i])
 		send_byte(argc[2][i++], server_pid);
 	send_byte(argc[2][i], server_pid);
 	t = clock() - t;
-	time = ((double)t) / CLOCKS_PER_SEC;	
+	time = ((double)t) / CLOCKS_PER_SEC;
 	print_resume (argc[2], server_pid, time * 1000);
 	return (0);
 }
-

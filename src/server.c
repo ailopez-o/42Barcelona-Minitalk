@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include <time.h>
 
 typedef struct s_client{
 	char	byte;
@@ -21,14 +22,14 @@ typedef struct s_client{
 	int		bytes_recived;
 }	t_client;
 
-    /* 
+	/* 
 	Sigaction is a struct describing a signal handler. It contains:
-	   - A signal handler function
-	   - A signal mask which specifies which signals should be blocked
-         while the signal handler function is running. If the signal
-         handler returns normally, the original signal mask will be
-         restored. To understand signal masks, see sigprocmask.c
-	   - A set of flags.
+		- A signal handler function
+		- A signal mask which specifies which signals should be blocked
+		 while the signal handler function is running. If the signal
+		 handler returns normally, the original signal mask will be
+		 restored. To understand signal masks, see sigprocmask.c
+		- A set of flags.
 	
 	Specify the signal handler function to be called when one of
 	the specified signals occur.
@@ -53,35 +54,44 @@ typedef struct s_client{
 
 	*/
 
-void	print_msj(int bytes_recived, int pid)
+void	print_msj(int bytes_recived, int pid, double t_start)
 {
+	double	dbl_time;
+	int		time;
+
+	t_start = clock() - t_start;
+	dbl_time = ((double)t_start) / CLOCKS_PER_SEC;
+	time = (int)(dbl_time * 1000);
 	ft_printf("\n\n 📟 Message finished from PID[%d]\n", pid);
-	ft_printf(" 🔸 %d bytes recived\n\n", bytes_recived);		
+	ft_printf(" 🔸 %d bytes recived in %d ms.\n\n", bytes_recived, time);
 }
 
-void	reset_client(t_client *client, int pid)
+void	reset_client(t_client *client, int pid, clock_t *t_start)
 {
 	ft_printf("\n\n 📥 Starting new message from PID [%d]\n\n", pid);
 	client->pid = pid;
 	client->num_bit = 0;
 	client->bytes_recived = 0;
+	*t_start = clock();
 }
 
-void signal_recived(int sig, siginfo_t *si, void *uap)
+void	signal_recived(int sig, siginfo_t *si, void *uap)
 {
 	static t_client	client;
+	static clock_t	t_start;
+	double			time;
 
 	if (client.pid != si->si_pid && si->si_pid != 0)
-		reset_client (&client, si->si_pid);
+		reset_client (&client, si->si_pid, &t_start);
 	client.num_bit++;
 	client.byte |= (sig == SIGUSR2);
 	if (client.num_bit == 8)
 	{
 		ft_putchar_fd(client.byte, 1);
 		if (client.byte == 0)
-			print_msj(client.bytes_recived, client.pid);
+			print_msj(client.bytes_recived, client.pid, t_start);
 		client.bytes_recived++;
-		client.byte = 0;	
+		client.byte = 0;
 		client.num_bit = 0;
 	}
 	else
@@ -89,17 +99,17 @@ void signal_recived(int sig, siginfo_t *si, void *uap)
 	kill (client.pid, SIGUSR1);
 }
 
-int main (void)
+int	main(void)
 {
-    struct sigaction signal;
+	struct sigaction	signal;
 
-    signal.sa_sigaction = signal_recived;
+	signal.sa_sigaction = signal_recived;
 	sigfillset(&signal.sa_mask);
 	signal.sa_flags = SA_RESTART;
-    sigaction(SIGUSR2, &signal, NULL);
-    sigaction(SIGUSR1, &signal, NULL);
+	sigaction(SIGUSR2, &signal, NULL);
+	sigaction(SIGUSR1, &signal, NULL);
 	ft_printf("\nServer PID [%d]\n\n", getpid());
-    while(1)
+	while (1)
 	{
 		pause();
 	}
