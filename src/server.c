@@ -15,14 +15,11 @@
 #include <unistd.h>
 
 typedef struct s_client{
-	char	*buffer;
 	char	byte;
 	char	num_bit;
 	int		pid;
-	int		byte_recived;
+	int		bytes_recived;
 }	t_client;
-
-t_client	client;
 
     /* 
 	Sigaction is a struct describing a signal handler. It contains:
@@ -62,28 +59,28 @@ void	print_msj(int bytes_recived, int pid)
 	ft_printf(" 🔸 %d bytes recived\n\n", bytes_recived);		
 }
 
-void	reset_client(int pid)
+void	reset_client(t_client *client, int pid)
 {
 	ft_printf("\n\n 📥 Starting new message from PID [%d]\n\n", pid);
-	client.pid = pid;
-	client.num_bit = 0;
-	client.byte_recived = 0;
-	free (client.buffer);
-	client.buffer = ft_strdup("");
+	client->pid = pid;
+	client->num_bit = 0;
+	client->bytes_recived = 0;
 }
 
 void signal_recived(int sig, siginfo_t *si, void *uap)
 {
+	static t_client	client;
+
 	if (client.pid != si->si_pid && si->si_pid != 0)
-		reset_client (si->si_pid);
+		reset_client (&client, si->si_pid);
 	client.num_bit++;
 	client.byte |= (sig == SIGUSR2);
 	if (client.num_bit == 8)
 	{
 		ft_putchar_fd(client.byte, 1);
 		if (client.byte == 0)
-			print_msj(client.byte_recived, client.pid);
-		client.byte_recived++;
+			print_msj(client.bytes_recived, client.pid);
+		client.bytes_recived++;
 		client.byte = 0;	
 		client.num_bit = 0;
 	}
