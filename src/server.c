@@ -75,6 +75,11 @@ void	reset_client(t_client *client, int pid, clock_t *t_start)
 	*t_start = clock();
 }
 
+/*
+	This function checks the signal recived and push into the byte the
+	new bit recived. Once the byte is recived is printed in consule
+*/
+
 void	signal_recived(int sig, siginfo_t *si, void *uap)
 {
 	static t_client	client;

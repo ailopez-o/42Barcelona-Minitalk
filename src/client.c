@@ -16,11 +16,23 @@
 #include <fcntl.h>
 #include <time.h>
 
+/*
+	This function does not do anything, is just to recive the ACK signal
+	from the server that takes out the usleep() of send_byte
+*/
+
 void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
 	if (sig == SIGUSR1)
 		return ;
 }
+
+	/* 
+		This funcion rotate 8 times the bits of byte, and send the correspondig 
+		signal depending if the lowest bit is 1 o 0. Then set a uslepp like a 
+		TimeOut of ACK signal of the server. The funcion will continue if a ACK 
+		signal from the server is recived or the usleep is over
+	*/
 
 void	send_byte(char byte, int pid)
 {
@@ -46,6 +58,12 @@ void	send_byte(char byte, int pid)
 	}
 }
 
+	/* 
+	This function calls send_byte() for each byte in the string str
+	If gnl==1 will not send null caracter to avoid the server think is the 
+	end of the transmision in each file og get_next_line
+	*/
+
 int	send_string(char *str, int server_pid, int gnl)
 {
 	int	size;
@@ -57,6 +75,11 @@ int	send_string(char *str, int server_pid, int gnl)
 		send_byte(*str, server_pid);
 	return (size);
 }
+
+/*
+	This function extract the lines of a fd and send to
+	send_string with gnl=1
+*/
 
 int	send_gnl(char *path, int server_pid)
 {
@@ -84,8 +107,6 @@ int	send_gnl(char *path, int server_pid)
 
 int	main(int argv, char **argc)
 {
-	clock_t				t;
-	double				time;
 	int					server_pid;	
 	struct sigaction	signal;
 	int					bytes_send;
@@ -95,7 +116,6 @@ int	main(int argv, char **argc)
 	signal.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &signal, NULL);
 	server_pid = ft_atoi(argc[1]);
-	t = clock();
 	if (argv == 4 && argc[2][0] == '-' && argc[2][1] == 'g')
 		bytes_send = send_gnl (argc[3], server_pid);
 	else if (argv == 3)
@@ -105,8 +125,7 @@ int	main(int argv, char **argc)
 		ft_putstr_fd("Invalid arguments", 2);
 		return (-1);
 	}
-	time = ((double)clock() - t) / CLOCKS_PER_SEC;
-	ft_printf("\n\n 📟 Sended %d bytes to PID [%d] in %d ms.\n\n", \
-	bytes_send, server_pid, time * 1000);
+	ft_printf("\n\n 📟 Sended %d bytes to PID [%d].\n\n", \
+	bytes_send, server_pid);
 	return (0);
 }
