@@ -11,3 +11,11 @@
 ## Server - Client
 
 The purpose of this project is to code a small data exchange program using UNIX signals.
+
+<p align="center">
+	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/client.png?raw=true" />
+	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/server.png?raw=true" />
+</p>
+
+
+
