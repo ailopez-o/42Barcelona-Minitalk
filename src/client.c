@@ -44,9 +44,10 @@ void	send_byte(char byte, int pid)
 	while (i < 8)
 	{
 		if (byte & 0x80)
-			kill_response = kill (pid, SIGUSR2);
+			kill (pid, SIGUSR2);
 		else
-			kill_response = kill (pid, SIGUSR1);
+			kill (pid, SIGUSR1);
+		pause();
 		if (kill_response < 0)
 		{
 			ft_putstr_fd("Signal error", 2);
@@ -54,7 +55,7 @@ void	send_byte(char byte, int pid)
 		}			
 		byte <<= 1;
 		i++;
-		usleep(10000);
+	//	usleep(10000);
 	}
 }
 
