@@ -20,6 +20,7 @@ typedef struct s_client{
 	char	num_bit;
 	int		pid;
 	int		bytes_recived;
+	char	*buffer;
 }	t_client;
 
 	/* 
@@ -54,25 +55,45 @@ typedef struct s_client{
 
 	*/
 
-void	print_msj(int bytes_recived, int pid, double t_start)
+void	print_msj(int bytes_recived, int pid, char *msj)
 {
-	double	dbl_time;
-	int		time;
-
-	t_start = clock() - t_start;
-	dbl_time = ((double)t_start) / CLOCKS_PER_SEC;
-	time = (int)(dbl_time * 1000);
+	ft_printf("\n%s\n", msj);
 	ft_printf("\n\n 📟 Message finished from PID[%d]\n", pid);
-	ft_printf(" 🔸 %d bytes recived in %d ms.\n\n", bytes_recived, time);
+	ft_printf(" 🔸 %d bytes recived\n\n", bytes_recived);
 }
 
-void	reset_client(t_client *client, int pid, clock_t *t_start)
+void	reset_client(t_client *client, int pid)
 {
 	ft_printf("\n\n 📥 Starting new message from PID [%d]\n\n", pid);
 	client->pid = pid;
 	client->num_bit = 0;
 	client->bytes_recived = 0;
-	*t_start = clock();
+	free(client->buffer);
+	client->buffer = NULL;
+	client->buffer = ft_strdup("");
+}
+
+void	new_byte(t_client *client, int byte)
+{
+	char	*tmp;
+	char	str_byte[2];
+
+	str_byte[0] = client->byte;
+	str_byte[1] = '\0';
+	tmp = ft_strjoin(client->buffer, str_byte);
+	free (client->buffer);
+	client->buffer = tmp;
+	client->bytes_recived++;
+	if (client->byte == 0)
+	{
+		print_msj(client->bytes_recived, client->pid, client->buffer);
+		free(client->buffer);
+		client->buffer = NULL;
+	}
+	else
+		ft_printf("\r\e[1;34mReceiving [%d] bytes\e[0m", client->bytes_recived);
+	client->byte = 0;
+	client->num_bit = 0;
 }
 
 /*
@@ -83,25 +104,16 @@ void	reset_client(t_client *client, int pid, clock_t *t_start)
 void	signal_recived(int sig, siginfo_t *si, void *uap)
 {
 	static t_client	client;
-	static clock_t	t_start;
-	double			time;
 
 	if (client.pid != si->si_pid && si->si_pid != 0)
-		reset_client (&client, si->si_pid, &t_start);
+		reset_client (&client, si->si_pid);
 	client.num_bit++;
 	client.byte |= (sig == SIGUSR2);
 	if (client.num_bit == 8)
-	{
-		ft_putchar_fd(client.byte, 1);
-		if (client.byte == 0)
-			print_msj(client.bytes_recived, client.pid, t_start);
-		client.bytes_recived++;
-		client.byte = 0;
-		client.num_bit = 0;
-	}
+		new_byte(&client, client.byte);
 	else
 		client.byte <<= 1;
-	usleep(40);
+	usleep(50);
 	kill (client.pid, SIGUSR1);
 }
 
