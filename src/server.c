@@ -101,7 +101,7 @@ void	signal_recived(int sig, siginfo_t *si, void *uap)
 	}
 	else
 		client.byte <<= 1;
-	usleep(30);
+	usleep(40);
 	kill (client.pid, SIGUSR1);
 }
 

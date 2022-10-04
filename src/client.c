@@ -16,6 +16,8 @@
 #include <fcntl.h>
 #include <time.h>
 
+int	g_num_ack;
+
 /*
 	This function does not do anything, is just to recive the ACK signal
 	from the server that takes out the usleep() of send_byte
@@ -24,7 +26,7 @@
 void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
 	if (sig == SIGUSR1)
-		return ;
+		g_num_ack++;
 }
 
 	/* 
@@ -36,17 +38,19 @@ void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 
 void	send_byte(char byte, int pid)
 {
-	int	i;
-	int	kill_response;
+	int			i;
+	int			kill_response;
+	int			signal;
+	static int	num_bytes;
 
 	i = 0;
-	ft_putchar_fd(byte, 1);
 	while (i < 8)
 	{
 		if (byte & 0x80)
-			kill (pid, SIGUSR2);
+			signal = SIGUSR2;
 		else
-			kill (pid, SIGUSR1);
+			signal = SIGUSR1;
+		kill_response = kill(pid, signal);
 		pause();
 		if (kill_response < 0)
 		{
@@ -55,8 +59,9 @@ void	send_byte(char byte, int pid)
 		}			
 		byte <<= 1;
 		i++;
-	//	usleep(10000);
 	}
+	num_bytes++;
+	ft_printf("\r\e[1;34mSending [%d] bytes\e[0m", num_bytes);
 }
 
 	/* 
@@ -70,10 +75,15 @@ int	send_string(char *str, int server_pid, int gnl)
 	int	size;
 
 	size = ft_strlen (str);
+	if (!gnl)
+		g_num_ack = 0;
 	while (*str)
 		send_byte(*(str++), server_pid);
 	if (!gnl)
+	{
 		send_byte(*str, server_pid);
+		size++;
+	}
 	return (size);
 }
 
@@ -88,6 +98,7 @@ int	send_gnl(char *path, int server_pid)
 	char	*line;
 	int		bytes_send;
 
+	g_num_ack = 0;
 	fd = open(path, O_RDONLY);
 	if (fd < 1)
 	{
@@ -103,6 +114,7 @@ int	send_gnl(char *path, int server_pid)
 		line = get_next_line(fd);
 	}
 	send_byte(0, server_pid);
+	bytes_send++;
 	return (bytes_send);
 }
 
@@ -126,7 +138,9 @@ int	main(int argv, char **argc)
 		ft_putstr_fd("Invalid arguments", 2);
 		return (-1);
 	}
-	ft_printf("\n\n 📟 Sended %d bytes to PID [%d].\n\n", \
+	ft_printf("\n\n 📟 Sended %d bytes to PID [%d].\n", \
 	bytes_send, server_pid);
+	ft_printf("\n 🔰 Recived %d bytes ACK from PID [%d].\n\n", \
+	g_num_ack / 8, server_pid);
 	return (0);
 }
