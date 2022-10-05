@@ -40,18 +40,20 @@ Execute Server
 ```bash
 $ ./server
 ```
-
+<p align="center">
+	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/server_pid.png?raw=true" />
+</p>
 
 Execute client with the Server PID and a string to send
 
 ```bash
-$ ./client 12345 "String to send"
+$ ./client server_pid "String to send"
 ```
 ```bash
-$ ./client 12345 "$(cat file.txt)"
+$ ./client server_pid "$(cat file.txt)"
 ```
 ```bash
-$ ./client 12345 -g file.txt
+$ ./client server_pid -g file.txt
 ```
 
 <p align="center">
