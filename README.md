@@ -12,6 +12,11 @@
 
 The purpose of this project is to code a small data exchange program using UNIX signals.
 
+<p align="center">
+	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/minitalk.gif?raw=true" />
+</p>
+
+## Making programs
 
 Cloning the repo
 ```bash
@@ -30,7 +35,7 @@ $ make client
 To compile server
 
 ```bash
-$ make client
+$ make server
 ```
 
 ## How to use
