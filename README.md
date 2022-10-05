@@ -12,6 +12,48 @@
 
 The purpose of this project is to code a small data exchange program using UNIX signals.
 
+
+Cloning the repo
+```bash
+git clone --recursive https://github.com/ailopez-o/42Barcelona-Minitalk.git
+```
+To compile client & server
+
+```bash
+$ make
+```
+To compile client
+
+```bash
+$ make client
+```
+To compile server
+
+```bash
+$ make client
+```
+
+## How to use
+
+Execute Server
+
+```bash
+$ ./server
+```
+
+
+Execute client with the Server PID and a string to send
+
+```bash
+$ ./client 12345 "String to send"
+```
+```bash
+$ ./client 12345 "$(cat file.txt)"
+```
+```bash
+$ ./client 12345 -g file.txt
+```
+
 <p align="center">
 	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/client.png?raw=true" />
 	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/server.png?raw=true" />
