@@ -41,7 +41,7 @@ Execute Server
 $ ./server
 ```
 <p align="center">
-	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/server_pid.png?raw=true" />
+	<img src="https://github.com/ailopez-o/42Barcelona-Minitalk/blob/main/img/serverpid.png?raw=true" />
 </p>
 
 Execute client with the Server PID and a string to send
