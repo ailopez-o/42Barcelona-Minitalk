@@ -73,7 +73,7 @@ void	reset_client(t_client *client, int pid)
 	client->buffer = ft_strdup("");
 }
 
-void	new_byte(t_client *client, int byte)
+void	new_byte(t_client *client)
 {
 	char	*tmp;
 	char	str_byte[2];
@@ -105,15 +105,17 @@ void	signal_recived(int sig, siginfo_t *si, void *uap)
 {
 	static t_client	client;
 
+	(void)si;
+	(void)uap;
 	if (client.pid != si->si_pid && si->si_pid != 0)
 		reset_client (&client, si->si_pid);
 	client.num_bit++;
 	client.byte |= (sig == SIGUSR2);
 	if (client.num_bit == 8)
-		new_byte(&client, client.byte);
+		new_byte(&client);
 	else
 		client.byte <<= 1;
-	usleep(50);
+	usleep(60);
 	kill (client.pid, SIGUSR1);
 }
 

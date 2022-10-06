@@ -25,6 +25,8 @@ int	g_num_ack;
 
 void	clean_semaforo(int sig, siginfo_t *si, void *uap)
 {
+	(void)uap;
+	(void)si;
 	if (sig == SIGUSR1)
 		g_num_ack++;
 }
@@ -51,12 +53,12 @@ void	send_byte(char byte, int pid)
 		else
 			signal = SIGUSR1;
 		kill_response = kill(pid, signal);
-		pause();
 		if (kill_response < 0)
 		{
 			ft_putstr_fd("Signal error", 2);
 			exit(-1);
-		}			
+		}
+		pause();
 		byte <<= 1;
 		i++;
 	}
@@ -124,23 +126,23 @@ int	main(int argv, char **argc)
 	struct sigaction	signal;
 	int					bytes_send;
 
-	signal.sa_sigaction = clean_semaforo;
-	sigfillset(&signal.sa_mask);
-	signal.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &signal, NULL);
-	server_pid = ft_atoi(argc[1]);
-	if (argv == 4 && argc[2][0] == '-' && argc[2][1] == 'g')
-		bytes_send = send_gnl (argc[3], server_pid);
-	else if (argv == 3)
-		bytes_send = send_string (argc[2], server_pid, 0);
-	else
+	if (argv == 3 || argv == 4)
 	{
-		ft_putstr_fd("Invalid arguments", 2);
-		return (-1);
+		signal.sa_sigaction = clean_semaforo;
+		sigfillset(&signal.sa_mask);
+		signal.sa_flags = SA_SIGINFO;
+		sigaction(SIGUSR1, &signal, NULL);
+		server_pid = ft_atoi(argc[1]);
+		if (argv == 4 && argc[2][0] == '-' && argc[2][1] == 'g')
+			bytes_send = send_gnl (argc[3], server_pid);
+		else
+			bytes_send = send_string (argc[2], server_pid, 0);
+		ft_printf("\n\n 📟 Sended %d bytes to PID [%d].\n", \
+		bytes_send, server_pid);
+		ft_printf("\n 🔰 Recived %d bytes ACK from PID [%d].\n\n", \
+		g_num_ack / 8, server_pid);
 	}
-	ft_printf("\n\n 📟 Sended %d bytes to PID [%d].\n", \
-	bytes_send, server_pid);
-	ft_printf("\n 🔰 Recived %d bytes ACK from PID [%d].\n\n", \
-	g_num_ack / 8, server_pid);
+	else
+		ft_putstr_fd("Invalid arguments", 2);
 	return (0);
 }
