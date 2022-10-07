@@ -47,22 +47,23 @@ FCLEANED	=	echo "\n🧼 $(BOLD_YELLOW)Fclean: $(NO_COLOR)Removed the executables
 all: 
 	@Make libs
 	@echo "\n$(BOLD_YELLOW)/////////////// MINITALK /////////////////$(NO_COLOR)\n"
-	@echo "\n🚧 $(BOLD_YELLOW)Compiling Server..\n$(NO_COLOR)"	
+	@echo "\n🚧 $(YELLOW)Compiling Server..\n$(NO_COLOR)"	
 	@Make $(SERVER)
-	@echo "\n🚧 $(BOLD_YELLOW)Compiling Client..\n$(NO_COLOR)"	
+	@echo "\n🚧 $(YELLOW)Compiling Client..\n$(NO_COLOR)"	
 	@Make $(CLIENT)
 
 libs:
-	@$(COMP_START)
+	@echo "\n$(GRAY)➖➖➖➖➖    LIBS    ➖➖➖➖➖➖$(NO_COLOR)\n"
 	@$(MAKE) -C $(MYLIB_DIR)
+	@echo "\n$(GRAY)➖➖➖➖➖ LIBS  DONE ➖➖➖➖➖➖➖➖➖$(NO_COLOR)\n"	
 
-$(SERVER): $(SERVER_OBJS) $(MYLIB)
-	@echo " 🍩 $(WHITE)$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+$(SERVER): $(SERVER_OBJS) $(MYLIB) Makefile
+	@echo " 🍕 $(WHITE)$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(SERVER)
 	@$(SERV_READY)
 
-$(CLIENT): $(CLIENT_OBJS) $(MYLIB)
-	@echo " 🍩 $(WHITE)$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+$(CLIENT): $(CLIENT_OBJS) $(MYLIB) Makefile
+	@echo " 🍕 $(WHITE)$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)
 	@$(CLI_READY)
 
