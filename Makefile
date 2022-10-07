@@ -37,8 +37,8 @@ MYLIB		=	$(MYLIB_DIR)/libftprintf.a
 # ------------------------------ Messages ------------------------------
 
 COMP_START	=	echo "\n🚧 $(BOLD_YELLOW)Make: $(NO_COLOR)Starting the compilation...\n"
-SERV_READY	=	echo "\n📥 Server ready!\n"
-CLI_READY	=	echo "\n📟 Client ready!\n"
+SERV_READY	=	echo "📥 Server ready!\n"
+CLI_READY	=	echo "📟 Client ready!\n"
 CLEANED		=	echo "\n💧 $(BOLD_YELLOW)Clean: $(NO_COLOR)Removed all the \".o\" files \n"
 FCLEANED	=	echo "\n🧼 $(BOLD_YELLOW)Fclean: $(NO_COLOR)Removed the executables \n"
 
@@ -46,11 +46,12 @@ FCLEANED	=	echo "\n🧼 $(BOLD_YELLOW)Fclean: $(NO_COLOR)Removed the executables
 
 all: 
 	@Make libs
-	@echo "\n$(BOLD_YELLOW)/////////////// MINITALK /////////////////$(NO_COLOR)\n"
-	@echo "\n🚧 $(YELLOW)Compiling Server..\n$(NO_COLOR)"	
-	@Make $(SERVER)
-	@echo "\n🚧 $(YELLOW)Compiling Client..\n$(NO_COLOR)"	
-	@Make $(CLIENT)
+	@echo "\n🚧 $(YELLOW)Compiling Server..$(NO_COLOR)"	
+	@Make -s $(SERVER)
+	@$(SERV_READY)	
+	@echo "\n🚧 $(YELLOW)Compiling Client..$(NO_COLOR)"	
+	@Make -s $(CLIENT)
+	@$(CLI_READY)
 
 libs:
 	@echo "\n$(GRAY)➖➖➖➖➖    LIBS    ➖➖➖➖➖➖$(NO_COLOR)\n"
@@ -58,18 +59,17 @@ libs:
 	@echo "\n$(GRAY)➖➖➖➖➖ LIBS  DONE ➖➖➖➖➖➖➖➖➖$(NO_COLOR)\n"	
 
 $(SERVER): $(SERVER_OBJS) $(MYLIB) Makefile
-	@echo " 🍕 $(WHITE)$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+	@echo "🍕 $(WHITE)$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(SERVER)
-	@$(SERV_READY)
+
 
 $(CLIENT): $(CLIENT_OBJS) $(MYLIB) Makefile
-	@echo " 🍕 $(WHITE)$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+	@echo "🍕 $(WHITE)$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)
-	@$(CLI_READY)
 
 $(SRCS)%.o:$(SRCS)%.c
 	@${CC} ${CFLAGS} -c $< -o $@
-	@echo " 🔧 $(GRAY)${CC} ${CFLAGS} -I./ -c $< -o $@$(DEF_COLOR)"
+	@echo "🔧 $(GRAY)${CC} ${CFLAGS} -I./ -c $< -o $@$(DEF_COLOR)"
 
 clean:
 	@$(MAKE) clean -C $(MYLIB_DIR)
