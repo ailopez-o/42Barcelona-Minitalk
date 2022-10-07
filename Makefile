@@ -16,7 +16,7 @@ WHITE = \033[0;97m
 
 #Sources
 
-SERVER = server 
+SERVER = server
 CLIENT = client
 
 SRCS 		= src/
@@ -32,7 +32,7 @@ CFLAGS = -Wall -Wextra -Werror
 CFLAGS_D = -Wall -Wextra -Werror -g 
 
 MYLIB_DIR	= 	lib/mylib
-MYLIB		=	$(MYLIB_DIR)/mylib.a
+MYLIB		=	$(MYLIB_DIR)/libftprintf.a
 
 # ------------------------------ Messages ------------------------------
 
@@ -44,32 +44,41 @@ FCLEANED	=	echo "\n🧼 $(BOLD_YELLOW)Fclean: $(NO_COLOR)Removed the executables
 
 ###
 
-all: libs $(SERVER) $(CLIENT)
+all: 
+	@Make libs
+	@echo "\n$(BOLD_YELLOW)/////////////// MINITALK /////////////////$(NO_COLOR)\n"
+	@echo "\n🚧 $(BOLD_YELLOW)Compiling Server..\n$(NO_COLOR)"	
+	@Make $(SERVER)
+	@echo "\n🚧 $(BOLD_YELLOW)Compiling Client..\n$(NO_COLOR)"	
+	@Make $(CLIENT)
 
 libs:
 	@$(COMP_START)
 	@$(MAKE) -C $(MYLIB_DIR)
 
 $(SERVER): $(SERVER_OBJS) $(MYLIB)
-	@echo "\n🚧 $(BOLD_YELLOW)Compiling Server..\n$(NO_COLOR)"
-	$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(SERVER)
+	@echo " 🍩 $(WHITE)$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) $(SERVER_OBJS) $(MYLIB) -o $(SERVER)
 	@$(SERV_READY)
 
 $(CLIENT): $(CLIENT_OBJS) $(MYLIB)
-	@echo "\n🚧 $(BOLD_YELLOW)Compiling Client..\n$(NO_COLOR)"
-	$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)
+	@echo " 🍩 $(WHITE)$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)$(DEF_COLOR)"
+	@$(CC) $(CFLAGS) $(CLIENT_OBJS) $(MYLIB) -o $(CLIENT)
 	@$(CLI_READY)
 
 $(SRCS)%.o:$(SRCS)%.c
-	${CC} ${CFLAGS} -c $< -o $@
+	@${CC} ${CFLAGS} -c $< -o $@
+	@echo " 🔧 $(GRAY)${CC} ${CFLAGS} -I./ -c $< -o $@$(DEF_COLOR)"
 
 clean:
 	@$(MAKE) clean -C $(MYLIB_DIR)
-	@$(RM) $(OBJS)
+	@$(RM) $(SERVER_OBJS) $(CLIENT_OBJS)
+	@echo "$(MAGENTA) $(SERVER) & $(CLIENT) object files cleaned!$(DEF_COLOR)"
 
 fclean: clean
 	@$(MAKE) fclean -C $(MYLIB_DIR)
 	@$(RM) $(SERVER) $(CLIENT)
+	@echo "$(MAGENTA) $(SERVER) & $(CLIENT) cleaned!$(DEF_COLOR)"	
 
 re: fclean all
 

@@ -124,7 +124,6 @@ int	main(void)
 	struct sigaction	signal;
 
 	signal.sa_sigaction = signal_recived;
-	sigfillset(&signal.sa_mask);
 	signal.sa_flags = SA_RESTART;
 	sigaction(SIGUSR2, &signal, NULL);
 	sigaction(SIGUSR1, &signal, NULL);
