@@ -74,12 +74,12 @@ $(SRCS)%.o:$(SRCS)%.c
 clean:
 	@$(MAKE) clean -C $(MYLIB_DIR)
 	@$(RM) $(SERVER_OBJS) $(CLIENT_OBJS)
-	@echo "$(MAGENTA) $(SERVER) & $(CLIENT) object files cleaned!$(DEF_COLOR)"
+	@echo "$(MAGENTA)🚽 Cleaned $(SERVER) & $(CLIENT)$(DEF_COLOR)"
 
 fclean: clean
 	@$(MAKE) fclean -C $(MYLIB_DIR)
 	@$(RM) $(SERVER) $(CLIENT)
-	@echo "$(MAGENTA) $(SERVER) & $(CLIENT) cleaned!$(DEF_COLOR)"	
+	@echo "$(MAGENTA)🚽 Fcleaned $(SERVER) & $(CLIENT)$(DEF_COLOR)"	
 
 re: fclean all
 
